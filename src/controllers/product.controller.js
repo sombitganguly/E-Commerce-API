@@ -3,7 +3,6 @@ import User from '../models/user.model.js'
 
 export const addProduct = async (req, res, next)=>{
     try{
-
         const isAdmin = await User.findById(req.user.id)
         if(isAdmin.role !== 'ADMIN'){
             res.status(403).json({message:"Unauthorised"})
@@ -34,6 +33,29 @@ export const addProduct = async (req, res, next)=>{
         await newProduct.save()
         res.status(201).json({message:"Product has been added successfully"})
 
+    }
+    catch(err){
+        next(err)
+    }
+}
+
+export const deleteProduct = async (req, res, next) =>{
+    try{
+        const isAdmin = await User.findById(req.user.id)
+        if(isAdmin.role !== 'ADMIN'){
+            res.status(403).json({message:"Unauthorised"})
+            return
+        }
+
+        const {name, seller} = req.body
+        const deletedProduct = await Product.findOneAndDelete({name,seller})
+
+        if(!deletedProduct){
+            res.status(404).json({message:"Product not found"})
+            return
+        }
+
+        res.status(200).json({message:"Product Deleted Successfully"})
     }
     catch(err){
         next(err)

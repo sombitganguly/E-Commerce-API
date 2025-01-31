@@ -61,3 +61,45 @@ export const deleteProduct = async (req, res, next) =>{
         next(err)
     }
 }
+
+export const getProduct = async (req,res,next) =>{
+    try{
+        const name = req.query.name || null
+        const category = req.query.category || null
+
+        if(!name && !category){
+            res.status(400).json({message:"No search query received"})
+            return
+        }
+
+        let searchResults
+
+        if(name && !category){
+            searchResults = await Product.find({
+                name:{ $regex: name, $options: 'i'}
+            })
+        }
+
+        else if(!name && category){
+            searchResults = await Product.find({category})
+        }
+
+        else{
+            searchResults = await Product.find({
+                name: { $regex: name, $options: 'i'},
+                category
+            })
+        }
+
+        if(!searchResults.length){
+            res.status(200).json({message:"No result matches ur search"})
+            return
+        }
+
+        res.status(200).json(searchResults)
+
+    }
+    catch(err){
+        next(err)
+    }
+}

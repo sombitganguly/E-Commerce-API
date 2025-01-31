@@ -14,11 +14,6 @@ export const addProduct = async (req, res, next)=>{
             res.status(400).json({message:"All fields required"})
             return
         }
-
-        if(quantity && !Number.isInteger(quantity)){
-            res.status(400).json({message:"Invalid quantity"})
-            return
-        }
         
         const newProduct = new Product({
             name,
@@ -26,7 +21,6 @@ export const addProduct = async (req, res, next)=>{
             seller,
             price,
             category,
-            quantity,
             imageUrls
         })
 
@@ -38,6 +32,8 @@ export const addProduct = async (req, res, next)=>{
         next(err)
     }
 }
+
+
 
 export const updateProduct= async(req, res, next)=>{
     try{
@@ -59,6 +55,8 @@ export const updateProduct= async(req, res, next)=>{
         next(err)
     }
 }
+
+
 
 export const deleteProduct = async (req, res, next) =>{
     try{
@@ -82,6 +80,8 @@ export const deleteProduct = async (req, res, next) =>{
         next(err)
     }
 }
+
+
 
 export const getProduct = async (req,res,next) =>{
     try{

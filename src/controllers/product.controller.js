@@ -39,6 +39,27 @@ export const addProduct = async (req, res, next)=>{
     }
 }
 
+export const updateProduct= async(req, res, next)=>{
+    try{
+        const isAdmin = await User.findById(req.user.id)
+        if(isAdmin.role !== 'ADMIN'){
+            res.status(403).json({message:"Unauthorised"})
+            return
+        }
+        
+        const updatedProduct = await Product.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true }
+        )
+
+        res.status(200).json({message:"Updated Successfully", data:updatedProduct})
+    }
+    catch(err){
+        next(err)
+    }
+}
+
 export const deleteProduct = async (req, res, next) =>{
     try{
         const isAdmin = await User.findById(req.user.id)

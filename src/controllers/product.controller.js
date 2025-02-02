@@ -9,7 +9,7 @@ export const addProduct = async (req, res, next)=>{
             return
         }
 
-        const {name, description, quantity, seller, price, category, imageUrls}= req.body
+        const {name, description, seller, price, category, imageUrls}= req.body
         if(!name || !description || !seller || !price || !category || !imageUrls){
             res.status(400).json({message:"All fields required"})
             return

@@ -32,3 +32,31 @@ export const addToCart = async (req, res, next) =>{
         next(err)
     }
 }
+
+export const getCart = async(req, res, next) =>{
+    try{
+        const userId = req.params.id
+        const cartItems = await CartItem.find({userId})
+        if(!cartItems){
+            res.status(404).json({message:"Cart is empty"})
+            return
+        }
+
+        const productData = []
+        let totalPrice=0
+
+        for(let cartItem of cartItems){
+            let product = await Product.findById(cartItem.productId)
+            let price = product.price * cartItem.quantity
+            console.log(cartItem.quantity)
+            totalPrice+= price
+            productData.push({name: product.name, seller: product.seller, price: product.price, quantity: cartItem.quantity})
+        }
+
+        const data = {productData, total: totalPrice}
+        res.status(200).json(data)
+    }
+    catch(e){
+        next(e)
+    }
+}
